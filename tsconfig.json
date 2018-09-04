@@ -4,7 +4,8 @@
         "module": "commonjs",
         "target": "es2017",
         "rootDirs": [ "src" ],
-        "outDir": "build"
+        "outDir": "build",
+        "sourceMap": true
     }
 
 }
