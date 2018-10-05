@@ -2,7 +2,9 @@
 import * as config from './config'
 import * as messageDB from './message_database'
 import * as discord from './discord'
+import * as twitter from './twitter'
 import * as log4js from 'log4js'
+
 
 function consoleAppender( prefix: string = '' ): log4js.ConsoleAppender {
     return {
@@ -55,7 +57,8 @@ async function main() {
 
     await Promise.all( [
         messageDB.init(),
-        discord.init()
+        discord.init(),
+        twitter.init()
     ] )
 
 }

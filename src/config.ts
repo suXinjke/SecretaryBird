@@ -34,6 +34,16 @@ interface MainConfig {
         },
 
         messageDBPath: string
+    },
+
+    twitter: {
+        signInPort: number,
+
+        consumerKey: string,
+        consumerSecret: string,
+
+        ebooksAccessToken: string,
+        ebooksAccessTokenSecret: string
     }
 }
 
@@ -51,6 +61,16 @@ const config: MainConfig = {
         processors: {},
 
         messageDBPath: ''
+    },
+
+    twitter: {
+        signInPort: null,
+
+        consumerKey: '',
+        consumerSecret: '',
+
+        ebooksAccessToken: '',
+        ebooksAccessTokenSecret: ''
     }
 }
 export function get(): MainConfig {
