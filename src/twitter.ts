@@ -1,12 +1,12 @@
 import * as Twit from 'twit'
 import * as LoginWithTwitter from 'login-with-twitter'
-import * as log4js from 'log4js'
 import * as config from './config'
 
 import * as fs from 'fs'
 import * as Koa from 'koa'
 
-const log: log4js.Logger = log4js.getLogger()
+import * as _debug from 'debug'
+const debug = _debug( 'twitter' )
 
 let token_secret = ''
 let login_with_twitter
@@ -73,6 +73,6 @@ export async function sendEbook( message: string ) {
     try {
         await ebooks_bot.post( 'statuses/update', { status: message } )
     } catch ( err ) {
-        log.error( err )
+        debug( err )
     }
 }

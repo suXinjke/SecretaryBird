@@ -1,4 +1,3 @@
-import * as log4js from 'log4js'
 import * as lodash from 'lodash'
 import * as node_config from 'config'
 import * as Discord from 'discord.js'
@@ -22,7 +21,7 @@ interface DiscordCommandConfig {
 }
 
 interface MainConfig {
-    log: Log4jsSettings,
+    forceDebugLogging: boolean,
 
     discord: {
         authToken: string,
@@ -48,10 +47,7 @@ interface MainConfig {
 }
 
 const config: MainConfig = {
-    log: {
-        toConsole: true,
-        toFile: null
-    },
+    forceDebugLogging: false,
 
     discord: {
         authToken: null,
@@ -82,10 +78,7 @@ export function init() {
         const newConfig = node_config.util.loadFileConfigs( '' )
         set( newConfig )
     } catch ( err ) {
-        const log = log4js.getLogger( 'main' )
-        if ( log ) {
-            log.error( err )
-        }
+        console.error( err )
     }
 }
 

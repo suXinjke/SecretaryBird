@@ -4,12 +4,13 @@ import * as messageDB from './message_database'
 import ask from './routines/ask'
 import discordRandomMessage from './routines/discord_random_message'
 import * as fs from 'fs'
-import * as log4js from 'log4js'
 import * as lodash from 'lodash'
+
+import * as _debug from 'debug'
+const debug = _debug( 'discord' )
 
 let discordClient: Discord.Client = null
 
-const log: log4js.Logger = log4js.getLogger()
 let processing = false
 
 function isProcessorAllowed( command: string, msg: Discord.Message ): boolean {
@@ -160,7 +161,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
         const processorName = args[0]
         const processor = messageProcessors[ processorName ]
         if ( !processor ) {
-            log.error( 'unknown processor' )
+            debug( 'unknown processor' )
             return
         }
 
@@ -169,7 +170,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
             to_date = new Date( args[1] )
             const date_is_correct = !isNaN( Number( to_date ) )
             if ( !date_is_correct ) {
-                log.error( 'incorrect to_date provided for the +crawl command' )
+                debug( 'incorrect to_date provided for the +crawl command' )
                 return
             }
         }
@@ -195,7 +196,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
             if ( lastMessage ) {
                 idCursor = lastMessage.id
                 messageCount += messageBatch.size
-                log.info( `${processorName} | ${messageCount} | ${new Date( lastMessage.createdTimestamp )}` )
+                debug( `${processorName} | ${messageCount} | ${new Date( lastMessage.createdTimestamp )}` )
             } else {
                 idCursor = ''
             }
@@ -212,10 +213,10 @@ export async function init() {
 
     discordClient = new Discord.Client()
     discordClient.on( 'error', err => {
-        log.error( err )
+        debug( err.message )
     } )
     discordClient.on( 'debug', err => {
-        log.error( err )
+        debug( err )
     } )
     discordClient.on( 'message', onDiscordMessage )
 

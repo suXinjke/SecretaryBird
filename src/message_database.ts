@@ -1,9 +1,9 @@
 import * as sqlite from 'sqlite3'
 import * as config from './config'
-import * as log4js from 'log4js'
 import * as crypto from 'crypto'
 
-const log: log4js.Logger = log4js.getLogger()
+import * as _debug from 'debug'
+const debug = _debug( 'message_database' )
 
 let messagesDB: sqlite.Database = null
 
@@ -22,18 +22,18 @@ export async function init() {
     const { messageDBPath } = config.get().discord
 
     if ( !messageDBPath ) {
-        log.warn( 'Messages SQLite DB path is not specified' )
+        debug( 'Messages SQLite DB path is not specified' )
         return
     }
 
     await new Promise( ( res, rej ) => {
         messagesDB = new sqlite.Database( messageDBPath, ( err ) => {
             if ( err ) {
-                log.error( err )
+                debug( err.message )
                 return rej( err )
             }
 
-            log.info( 'Messages DB initialized' )
+            debug( 'Messages DB initialized' )
 
             res()
         } )
