@@ -127,16 +127,7 @@ export default async ( discordClient: Discord.Client, channel_id: string, messag
         contents: message.content,
         created_datetime: message.createdAt,
         username: message.author.tag
-    } ) )
-
-    // for ( const [ str, msg ] of fetchedMessages ) {
-    //     console.log( `${msg.createdAt} | ${msg.id} | ${msg.author.username} | ${msg.content}` )
-    // }
-
-    // `SELECT message_id FROM messages LIMIT 1 OFFSET ABS( RANDOM() ) % MAX( ( SELECT COUNT(*) FROM messages ), 1 )`
-
-    // TODO: config stuff
-    const {  } = config.get().discord
+    } ) ).sort( ( a, b ) => Number( a.created_datetime ) - Number( b.created_datetime ) )
 
     return sanitizeMessages( {
         messages: fetchedMessages
