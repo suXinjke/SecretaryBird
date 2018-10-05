@@ -13,7 +13,7 @@ export interface DumpedMessage {
     created_datetime: number
 }
 
-function getSHA1( message: string ): string {
+function getSHA256( message: string ): string {
     return crypto.createHash( 'sha256' ).update( message ).digest( 'hex' )
 }
 
@@ -49,7 +49,7 @@ export async function init() {
     } )
 }
 
-export async function dumpMessages( messages: DumpedMessage[] ) {
+export function dumpMessages( messages: DumpedMessage[] ) {
     if ( messages.length === 0 ) {
         return
     }
@@ -61,10 +61,12 @@ export async function dumpMessages( messages: DumpedMessage[] ) {
         messagesDB.run( sql, params, ( err ) => {
             return err ? rej( err ) : res()
         } )
+    } ).catch( err => {
+        debug( err )
     } )
 }
 
-export async function getRandomDumpedMessage(): Promise<DumpedMessage> {
+export function getRandomDumpedMessage() {
     const sql = `SELECT channel_id, message_id, created_datetime FROM messages WHERE rowid = abs( random() ) % ( SELECT max( rowid ) FROM messages ) + 1`
 
     return new Promise<DumpedMessage>( ( res, rej ) => {
@@ -76,10 +78,12 @@ export async function getRandomDumpedMessage(): Promise<DumpedMessage> {
                 created_datetime: row.created_datetime
             } )
         } )
+    } ).catch( err => {
+        debug( err )
     } )
 }
 
-export async function deletePostedMessage( message_id: string ) {
+export function deletePostedMessage( message_id: string ) {
     const sql = `DELETE FROM messages WHERE message_id = ?`
 
     return new Promise<DumpedMessage>( ( res, rej ) => {
@@ -87,27 +91,33 @@ export async function deletePostedMessage( message_id: string ) {
         messagesDB.run( sql, [ message_id ], ( err ) => {
             return err ? rej( err ) : res()
         } )
+    } ).catch( err => {
+        debug( err )
     } )
 }
 
-export async function addMessageContentHash( message: string ) {
+export function addMessageContentHash( message: string ) {
     const sql = `INSERT OR IGNORE INTO posted_messages ( 'message_hash' ) VALUES ( ? )`
 
     return new Promise<DumpedMessage>( ( res, rej ) => {
 
-        messagesDB.run( sql, [ getSHA1( message ) ], ( err ) => {
+        messagesDB.run( sql, [ getSHA256( message ) ], ( err ) => {
             return err ? rej( err ) : res()
         } )
+    } ).catch( err => {
+        debug( err )
     } )
 }
 
-export async function containsMessageHashOfMessage( message: string ) {
+export function containsMessageHashOfMessage( message: string ) {
     const sql = `SELECT COUNT(*) AS contains_hash FROM posted_messages WHERE message_hash = ?`
 
     return new Promise<boolean>( ( res, rej ) => {
 
-        messagesDB.get( sql, [ getSHA1( message ) ], ( err, row ) => {
+        messagesDB.get( sql, [ getSHA256( message ) ], ( err, row ) => {
             return err ? rej( err ) : res( row.contains_hash !== 0 )
         } )
+    } ).catch( err => {
+        debug( err )
     } )
 }

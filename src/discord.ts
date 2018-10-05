@@ -7,6 +7,7 @@ import * as fs from 'fs'
 import * as lodash from 'lodash'
 
 import * as _debug from 'debug'
+import { DumpedMessage } from './message_database'
 const debug = _debug( 'discord' )
 
 let discordClient: Discord.Client = null
@@ -94,6 +95,36 @@ const messageProcessors = {
                 staticFileStream.close()
                 staticFileStream = undefined
             }, 5000 )
+        }
+    } )(),
+
+    to_database: ( () => {
+        let messageBuffer: DumpedMessage[] = []
+        let messageBufferTimeout: NodeJS.Timer
+
+        return ( msg: Discord.Message ) => {
+            const dumpedMessage: DumpedMessage = {
+                id: msg.id,
+                channel_id: msg.channel.id,
+                created_datetime: msg.createdTimestamp
+            }
+
+            if ( messageBuffer.length < 100 ) {
+                messageBuffer.push( dumpedMessage )
+
+                if ( messageBufferTimeout ) {
+                    clearTimeout( messageBufferTimeout )
+                }
+                messageBufferTimeout = setTimeout( () => {
+                    messageDB.dumpMessages( messageBuffer )
+                    messageBuffer = []
+                }, 5000 )
+
+                return
+            }
+
+            messageDB.dumpMessages( messageBuffer )
+            messageBuffer = []
         }
     } )()
 }
