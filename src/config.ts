@@ -32,7 +32,8 @@ interface MainConfig {
             [index: string]: DiscordCommandConfig
         },
 
-        messageDBPath: string
+        messageDBPath: string,
+        messageDBChannels: string[]
     },
 
     twitter: {
@@ -42,7 +43,9 @@ interface MainConfig {
         consumerSecret: string,
 
         ebooksAccessToken: string,
-        ebooksAccessTokenSecret: string
+        ebooksAccessTokenSecret: string,
+
+        ebooksCronSchedule: string
     }
 }
 
@@ -56,7 +59,8 @@ const config: MainConfig = {
 
         processors: {},
 
-        messageDBPath: ''
+        messageDBPath: '',
+        messageDBChannels: []
     },
 
     twitter: {
@@ -66,7 +70,9 @@ const config: MainConfig = {
         consumerSecret: '',
 
         ebooksAccessToken: '',
-        ebooksAccessTokenSecret: ''
+        ebooksAccessTokenSecret: '',
+
+        ebooksCronSchedule: ''
     }
 }
 export function get(): MainConfig {

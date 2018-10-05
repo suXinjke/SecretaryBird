@@ -1,6 +1,7 @@
 import * as Discord from 'discord.js'
 import * as config from './config'
 import * as messageDB from './message_database'
+import * as twitter from './twitter'
 import ask from './routines/ask'
 import discordRandomMessage from './routines/discord_random_message'
 import * as fs from 'fs'
@@ -129,19 +130,48 @@ const messageProcessors = {
     } )()
 }
 
+export async function getRandomDumpedMessageToSend() {
+    const dumpedMessage = await messageDB.getRandomDumpedMessage()
+    if ( !dumpedMessage ) {
+        return
+    }
+
+    const randomMessage = await discordRandomMessage( discordClient, dumpedMessage.channel_id, dumpedMessage.id )
+
+    randomMessage.parsedMessages.forEach(
+        parsedMessage => messageDB.deletePostedMessage( parsedMessage.message_id )
+    )
+
+    if ( !randomMessage.result ) {
+        debug( 'failed to get random message for sending: message contents are empty' )
+        return
+    }
+
+    if ( await messageDB.containsMessageHashOfMessage( randomMessage.result ) ) {
+        debug( 'failed to get random message for sending: message with simillar hash was already sent' )
+        return
+    }
+
+    messageDB.addMessageContentHash( randomMessage.result )
+
+    return randomMessage
+}
+
 async function onDiscordMessage( msg: Discord.Message ) {
 
     if ( processing ) {
         return
     }
 
-    const messageProcessingFunctions = []
-    messageProcessingFunctions.forEach( func => {
-        const processorName = ''
-        if ( isProcessorAllowed( processorName, msg ) ) {
-            func( msg )
-        }
-    } )
+    const { messageDBChannels } = config.get().discord
+
+    if ( messageDBChannels.includes( msg.channel.id ) ) {
+        messageDB.dumpMessages( [ {
+            id: msg.id,
+            channel_id: msg.channel.id,
+            created_datetime: msg.createdTimestamp
+        } ] )
+    }
 
     const parsedCommand = parseDiscordCommand( msg )
     if ( !parsedCommand.valid ) {
@@ -163,28 +193,13 @@ async function onDiscordMessage( msg: Discord.Message ) {
     }
 
     if ( command === '+rand' ) {
-
-        const dumpedMessage = await messageDB.getRandomDumpedMessage()
-        if ( !dumpedMessage ) {
-            return
+        for ( let i = 0 ; i < 100 ; i++ ) {
+            const randomMessage = await getRandomDumpedMessageToSend()
+            if ( randomMessage ) {
+                msg.channel.send( randomMessage.result )
+                break
+            }
         }
-
-        const randomMessage = await discordRandomMessage( discordClient, dumpedMessage.channel_id, dumpedMessage.id )
-
-        randomMessage.parsedMessages.forEach(
-            parsedMessage => messageDB.deletePostedMessage( parsedMessage.message_id )
-        )
-
-        if ( !randomMessage.result ) {
-            return
-        }
-
-        if ( await messageDB.containsMessageHashOfMessage( randomMessage.result ) ) {
-            return
-        }
-
-        messageDB.addMessageContentHash( randomMessage.result )
-        msg.channel.send( randomMessage.result )
     }
 
     if ( command === '+crawl' ) {
