@@ -27,7 +27,7 @@ export async function init() {
     }
 
     await new Promise( ( res, rej ) => {
-        messagesDB = new sqlite.Database( './messages_example.db', ( err ) => {
+        messagesDB = new sqlite.Database( messageDBPath, ( err ) => {
             if ( err ) {
                 log.error( err )
                 return rej( err )
