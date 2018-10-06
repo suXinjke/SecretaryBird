@@ -30,6 +30,8 @@ interface MainConfig {
         botRandomPlayingMessages: string[],
         invisible: boolean,
 
+        emojiReplacements: Array<[ string, string ]>,
+
         processors?: {
             [index: string]: DiscordCommandConfig
         },
@@ -60,6 +62,8 @@ const config: MainConfig = {
         randomPlayingActivityChangeMsecs: 1000 * 60 * 60 * 24,
         randomPlayingActivityChangeErrorMsecs: 1000 * 60 * 60 * 12,
         invisible: false,
+
+        emojiReplacements: [],
 
         processors: {},
 

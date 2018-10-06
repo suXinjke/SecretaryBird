@@ -118,6 +118,8 @@ export default async ( discordClient: Discord.Client, channel_id: string, messag
         return { parsedMessages: [], result: '' }
     }
 
+    const { emojiReplacements } = config.get().discord
+
     const fetchedMessages = ( await channel.fetchMessages( {
         after: message_id,
         limit: 20
@@ -130,6 +132,7 @@ export default async ( discordClient: Discord.Client, channel_id: string, messag
     } ) ).sort( ( a, b ) => Number( a.created_datetime ) - Number( b.created_datetime ) )
 
     return sanitizeMessages( {
-        messages: fetchedMessages
+        messages: fetchedMessages,
+        emojiReplacements
     } )
 }
