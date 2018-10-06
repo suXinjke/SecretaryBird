@@ -33,21 +33,23 @@ function isProcessorAllowed( command: string, msg: Discord.Message ): boolean {
         return false
     }
 
-    if ( msg.guild && guildIDWhitelist.length > 0 && !guildIDWhitelist.includes( msg.guild.id ) ) {
-        return false
+    if ( msg.guild && guildIDWhitelist.length > 0 && guildIDWhitelist.includes( msg.guild.id ) ) {
+        return true
     }
 
-    if ( msg.channel && channelIDWhitelist.length > 0 && !channelIDWhitelist.includes( msg.channel.id ) ) {
-        return false
+    if ( msg.channel && channelIDWhitelist.length > 0 && channelIDWhitelist.includes( msg.channel.id ) ) {
+        return true
     }
 
-    const roleNameWhitelistPassed = roleNameWhitelist.length === 0 || msg.member.roles.find( role => roleNameWhitelist.includes( role.name ) )
-    const userTagWhitelistPassed = userTagWhitelist.length === 0 || userTagWhitelist.includes( msg.author.tag )
-    if ( !roleNameWhitelistPassed && !userTagWhitelistPassed ) {
-        return false
+    if ( roleNameWhitelist.length > 0 && msg.member.roles.find( role => roleNameWhitelist.includes( role.name ) ) ) {
+        return true
     }
 
-    return true
+    if ( userTagWhitelist.length > 0 && userTagWhitelist.includes( msg.author.tag ) ) {
+        return true
+    }
+
+    return false
 }
 
 interface DiscordCommand {
