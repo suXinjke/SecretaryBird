@@ -3,7 +3,7 @@ import * as url from 'url'
 import * as twitterText from 'twitter-text'
 import * as config from '../config'
 
-const linksRegex = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/
+const linksRegex = /(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/
 
 const codeBlockRegex = /(```)((.|\s)+)\1/g
 const inlineCodeRegex = /(`)(.*?)\1/g

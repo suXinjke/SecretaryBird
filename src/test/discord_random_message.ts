@@ -39,6 +39,10 @@ describe( 'Sanitizing of random messages for posting in public', () => {
         assert.equal( sanitize( 'very <:raiden:484678250254172172>' ), 'very' )
         assert.equal( sanitize( 'very <:yellow:484678250254172172>', [ ['yellow', '👱' ] ] ), 'very 👱' )
     } )
+
+    it( `When you type char.png it shouldn't become undefined`, () => {
+        assert.equal( sanitize( `when you type char.png it shouldn't become undefined` ), `when you type char.png it shouldn't become undefined` )
+    } )
 } )
 
 describe( 'Properly combining sanitized messages', () => {
