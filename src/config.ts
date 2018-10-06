@@ -25,6 +25,8 @@ interface MainConfig {
 
     discord: {
         authToken: string,
+        randomPlayingActivityChangeMsecs: number,
+        randomPlayingActivityChangeErrorMsecs: number,
         botRandomPlayingMessages: string[],
         invisible: boolean,
 
@@ -55,6 +57,8 @@ const config: MainConfig = {
     discord: {
         authToken: null,
         botRandomPlayingMessages: [],
+        randomPlayingActivityChangeMsecs: 1000 * 60 * 60 * 24,
+        randomPlayingActivityChangeErrorMsecs: 1000 * 60 * 60 * 12,
         invisible: false,
 
         processors: {},

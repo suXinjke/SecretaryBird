@@ -255,9 +255,34 @@ async function onDiscordMessage( msg: Discord.Message ) {
     }
 }
 
+let nextRandomPlayingActivityTimer: NodeJS.Timer
+export function setRandomPlayingActivity() {
+    if ( !discordClient || !discordClient.user ) {
+        return
+    }
+
+    const { botRandomPlayingMessages, randomPlayingActivityChangeMsecs, randomPlayingActivityChangeErrorMsecs } = config.get().discord
+    if ( botRandomPlayingMessages.length === 0 ) {
+        discordClient.user.setActivity( '', { type: 'PLAYING' } )
+        return
+    }
+
+    if ( nextRandomPlayingActivityTimer ) {
+        clearTimeout( nextRandomPlayingActivityTimer )
+    }
+
+
+    nextRandomPlayingActivityTimer = setTimeout(
+        setRandomPlayingActivity,
+        randomPlayingActivityChangeMsecs + lodash.random( -randomPlayingActivityChangeErrorMsecs, randomPlayingActivityChangeErrorMsecs )
+    )
+
+    discordClient.user.setActivity( lodash.sample( botRandomPlayingMessages ), { type: 'PLAYING' } )
+}
+
 export async function init() {
 
-    const { authToken, botRandomPlayingMessages, invisible } = config.get().discord
+    const { authToken, invisible } = config.get().discord
 
     discordClient = new Discord.Client()
     discordClient.on( 'error', err => {
@@ -274,6 +299,5 @@ export async function init() {
         discordClient.user.setStatus( 'invisible' )
     }
 
-    const playingMessage = botRandomPlayingMessages.length > 0 ? lodash.sample( botRandomPlayingMessages ) : ''
-    discordClient.user.setActivity( playingMessage, { type: 'PLAYING' } )
+    setRandomPlayingActivity()
 }
