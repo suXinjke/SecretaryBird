@@ -11,6 +11,7 @@ const boldItalicsRegex = /(\*+)(.+)\1/g
 const strikethroughRegex = /(\~\~)(.*?)\1/g
 const underlineRegex = /(__)(.*?)\1/g
 const discordMentionRegex = /<@\d+>/g
+const discordChannelRegex = /<#\d+>/g
 const discordEmojiRegex = /<:.+:\d+>/g
 
 export interface MessageToSanitize {
@@ -35,6 +36,7 @@ export function sanitize( message: string, emojiReplacements: EmojiReplacements 
     .replace( underlineRegex, '$2' )
     .replace( strikethroughRegex, '$2' )
     .replace( discordMentionRegex, '@█████████' )
+    .replace( discordChannelRegex, '#█████████' )
 
     for ( const emojiReplacement of emojiReplacements ) {
         const [ input, output ] = emojiReplacement

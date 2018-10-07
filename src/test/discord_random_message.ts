@@ -35,6 +35,10 @@ describe( 'Sanitizing of random messages for posting in public', () => {
         assert.equal( sanitize( 'here <@120341634327117824> <@366091824315760640> 👀 hey' ), 'here @█████████ @█████████ 👀 hey' )
     } )
 
+    it( 'Sanitize channel ids with blackout', () => {
+        assert.equal( sanitize( 'here <#371312472513509814> hey' ), 'here #█████████ hey' )
+    } )
+
     it( `No custom emoji unless it's on replace list`, () => {
         assert.equal( sanitize( 'very <:raiden:484678250254172172>' ), 'very' )
         assert.equal( sanitize( 'very <:yellow:484678250254172172>', [ ['yellow', '👱' ] ] ), 'very 👱' )
