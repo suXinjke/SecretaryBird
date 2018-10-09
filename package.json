@@ -17,6 +17,7 @@
     "config": "^2.0.1",
     "debug": "^4.0.1",
     "discord.js": "^11.2.1",
+    "has-emoji": "^1.0.0",
     "koa": "^2.5.3",
     "lodash": "^4.17.4",
     "login-with-twitter": "^1.2.0",

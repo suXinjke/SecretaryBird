@@ -3,6 +3,7 @@ import * as config from './config'
 import * as messageDB from './message_database'
 import * as twitter from './twitter'
 import ask from './routines/ask'
+import pick from './routines/pick'
 import discordRandomMessage from './routines/discord_random_message'
 import * as fs from 'fs'
 import * as lodash from 'lodash'
@@ -191,6 +192,11 @@ async function onDiscordMessage( msg: Discord.Message ) {
             return
         }
         const response = ask( contents )
+        msg.reply( response, { split: false } )
+    }
+
+    if ( command === '+pick' ) {
+        const response = pick( contents )
         msg.reply( response, { split: false } )
     }
 
