@@ -187,6 +187,10 @@ async function onDiscordMessage( msg: Discord.Message ) {
 
     const { command, contents, args } = parsedCommand
 
+    if ( msg.author.id === discordClient.user.id ) {
+        return
+    }
+
     if ( command === '+ask' ) {
         if ( !contents.trim() ) {
             return
