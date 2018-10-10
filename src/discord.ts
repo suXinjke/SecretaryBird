@@ -62,7 +62,7 @@ interface DiscordCommand {
 }
 
 function parseDiscordCommand( msg: Discord.Message ): DiscordCommand {
-    const commandRegex = /(\+[A-zА-я0-9]+) ?(.+)?/
+    const commandRegex = /^(\+[A-zА-я0-9]+) ?(.+)?/
     const results = commandRegex.exec( msg.content )
     if ( !results ) {
         return { valid: false, command: '', contents: '', args: [] }
