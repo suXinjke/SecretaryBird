@@ -12,7 +12,7 @@ const strikethroughRegex = /(\~\~)(.*?)\1/g
 const underlineRegex = /(__)(.*?)\1/g
 const discordMentionRegex = /<@\d+>/g
 const discordChannelRegex = /<#\d+>/g
-const discordEmojiRegex = /<:.+:\d+>/g
+const discordEmojiRegex = /<a?:.+:\d+>/g
 
 export interface MessageToSanitize {
     channel_id: string,
