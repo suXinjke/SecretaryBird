@@ -1,12 +1,13 @@
 import * as randomSeed from 'random-seed'
 import * as lodash from 'lodash'
 import * as has_emoji from 'has-emoji'
+import randomMarkdownDecorateFunction from './random_markdown_decorate'
 const rand = randomSeed.create()
 
 const discordMentionRegex = /<@\d+>/
 const discordChannelRegex = /<#\d+>/
 
-export default ( messageText: string ): string => {
+export default ( messageText: string, randomMarkdownDecorate: boolean = false ): string => {
 
     const separators = [ /\|\s*/g, /;\s*/g, /,\s*/g, /\s+(?:или|or)\s*/, /\s+/g ]
     const separatorToUse = separators.find( separator => separator.test( messageText ) ) || separators[separators.length - 1]
@@ -60,5 +61,7 @@ export default ( messageText: string ): string => {
         .trim()
 
     rand.seed( seed )
-    return choices[ rand( choices.length ) ]
+
+    const answer = choices[ rand( choices.length ) ]
+    return randomMarkdownDecorate ? randomMarkdownDecorateFunction( answer ) : answer
 }

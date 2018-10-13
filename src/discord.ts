@@ -166,7 +166,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
         return
     }
 
-    const { messageDBChannels } = config.get().discord
+    const { messageDBChannels, randomDecorateAskResults, randomDecoratePickResults } = config.get().discord
 
     if ( messageDBChannels.includes( msg.channel.id ) ) {
         messageDB.dumpMessages( [ {
@@ -195,12 +195,12 @@ async function onDiscordMessage( msg: Discord.Message ) {
         if ( !contents.trim() ) {
             return
         }
-        const response = ask( contents )
+        const response = ask( contents, randomDecorateAskResults )
         msg.reply( response, { split: false } )
     }
 
     if ( command === '+pick' ) {
-        const response = pick( contents )
+        const response = pick( contents, randomDecoratePickResults )
         msg.reply( response, { split: false } )
     }
 

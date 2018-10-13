@@ -37,7 +37,10 @@ interface MainConfig {
         },
 
         messageDBPath: string,
-        messageDBChannels: string[]
+        messageDBChannels: string[],
+
+        randomDecorateAskResults: boolean,
+        randomDecoratePickResults: boolean
     },
 
     twitter: {
@@ -68,7 +71,10 @@ const config: MainConfig = {
         processors: {},
 
         messageDBPath: '',
-        messageDBChannels: []
+        messageDBChannels: [],
+
+        randomDecorateAskResults: true,
+        randomDecoratePickResults: true
     },
 
     twitter: {
