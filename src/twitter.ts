@@ -11,28 +11,30 @@ import { getRandomDumpedMessageToSend } from './discord'
 const debug = _debug( 'twitter' )
 
 let token_secret = ''
-let login_with_twitter
 let ebooks_bot: Twit
 
 export async function init() {
 
     const { signInPort, consumerKey, consumerSecret, ebooksAccessToken, ebooksAccessTokenSecret, ebooksCronSchedule } = config.get().twitter
 
-    login_with_twitter = new LoginWithTwitter( {
-        consumerKey,
-        consumerSecret,
-        callbackUrl: 'http://127.0.0.1/'
-    } )
-
-    ebooks_bot = new Twit( {
-        consumer_key: consumerKey,
-        consumer_secret: consumerSecret,
-        access_token: ebooksAccessToken,
-        access_token_secret: ebooksAccessTokenSecret,
-        timeout_ms: 60 * 1000
-    } )
+    if ( consumerKey && consumerSecret && ebooksAccessToken && ebooksAccessTokenSecret ) {
+        debug( 'ebooks client initialized' )
+        ebooks_bot = new Twit( {
+            consumer_key: consumerKey,
+            consumer_secret: consumerSecret,
+            access_token: ebooksAccessToken,
+            access_token_secret: ebooksAccessTokenSecret,
+            timeout_ms: 60 * 1000
+        } )
+    }
 
     if ( signInPort ) {
+        const login_with_twitter = new LoginWithTwitter( {
+            consumerKey,
+            consumerSecret,
+            callbackUrl: 'http://127.0.0.1/'
+        } )
+
         const http = new Koa()
         http.use( async ctx => {
             if ( ctx.method === 'GET' ) {
@@ -69,6 +71,7 @@ export async function init() {
     }
 
     if ( ebooksCronSchedule ) {
+        debug( `ebooks will be posted by this cron schedule: ${ebooksCronSchedule}` )
         cron.scheduleJob( ebooksCronSchedule, async () => {
             for ( let i = 0 ; i < 100 ; i++ ) {
                 try {
