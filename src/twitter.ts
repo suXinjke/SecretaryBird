@@ -49,7 +49,7 @@ export async function init() {
 
                 ctx.body = fs.readFileSync( './dist/index.html' )
                 ctx.type = 'html'
-            } else if ( ctx.method = 'POST' ) {
+            } else if ( ctx.method === 'POST' ) {
                 token_secret = ''
 
                 const [ tokenSecret, url ] = await new Promise<[ string, string ]>( ( res, rej ) => {
