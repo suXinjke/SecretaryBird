@@ -4,6 +4,7 @@ import * as messageDB from './message_database'
 import * as twitter from './twitter'
 import ask from './routines/ask'
 import pick from './routines/pick'
+import range from './routines/range'
 import discordRandomMessage from './routines/discord_random_message'
 import * as fs from 'fs'
 import * as lodash from 'lodash'
@@ -201,6 +202,11 @@ async function onDiscordMessage( msg: Discord.Message ) {
 
     if ( command === '+pick' ) {
         const response = pick( contents, randomDecoratePickResults )
+        msg.reply( response, { split: false } )
+    }
+
+    if ( command === '+range' ) {
+        const response = range( contents )
         msg.reply( response, { split: false } )
     }
 
