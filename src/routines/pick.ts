@@ -7,6 +7,8 @@ const rand = randomSeed.create()
 const discordMentionRegex = /<@\d+>/
 const discordChannelRegex = /<#\d+>/
 
+const filterRegex = /([^A-zА-я\d\s]+)/ug
+
 export default ( messageText: string, randomMarkdownDecorate: boolean = false ): string => {
 
     const separators = [ /\|\s*/g, /;\s*/g, /,\s*/g, /\s+(?:или|or)\s*/, /\s+/g ]
@@ -31,8 +33,8 @@ export default ( messageText: string, randomMarkdownDecorate: boolean = false ):
                 return array.indexOf( choice ) === index
             }
 
-            const formattedArray = array.map( choiceToFormat => choiceToFormat.toLowerCase().replace( /([^a-яa-z\s]+)/iug, '' ).trim() )
-            return formattedArray.indexOf( choice.toLowerCase().replace( /([^a-яa-z\s]+)/iug, '' ).trim() ) === index
+            const formattedArray = array.map( choiceToFormat => choiceToFormat.toLowerCase().replace( filterRegex, '' ).trim() )
+            return formattedArray.indexOf( choice.toLowerCase().replace( filterRegex, '' ).trim() ) === index
         } )
 
     if ( choices.length <= 1 ) {
@@ -54,7 +56,7 @@ export default ( messageText: string, randomMarkdownDecorate: boolean = false ):
                 return choice
             }
 
-            return choice.replace( /([^a-яa-z\s]+)/iug, '' )
+            return choice.replace( filterRegex, '' )
         } )
         .join( ' ' )
         .toLowerCase()
