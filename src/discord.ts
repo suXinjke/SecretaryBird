@@ -273,7 +273,6 @@ export function setRandomPlayingActivity() {
 
     const { botRandomPlayingMessages, randomPlayingActivityChangeMsecs, randomPlayingActivityChangeErrorMsecs } = config.get().discord
     if ( botRandomPlayingMessages.length === 0 ) {
-        discordClient.user.setActivity( '', { type: 'PLAYING' } )
         return
     }
 
