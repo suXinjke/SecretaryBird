@@ -9,7 +9,17 @@ const discordChannelRegex = /<#\d+>/
 
 const filterRegex = /([^A-zА-я\d\s]+)/ug
 
-export default ( messageText: string, randomMarkdownDecorate: boolean = false ): string => {
+export default ( params: {
+    messageText: string,
+    randomMarkdownDecorate?: boolean,
+    additionalSeed?: string
+} ): string => {
+
+    const {
+        messageText,
+        randomMarkdownDecorate = false,
+        additionalSeed = ''
+    } = params
 
     const separators = [ /\|\s*/g, /;\s*/g, /,\s*/g, /\s+(?:или|or)\s*/, /\s+/g ]
     const separatorToUse = separators.find( separator => separator.test( messageText ) ) || separators[separators.length - 1]
@@ -62,7 +72,7 @@ export default ( messageText: string, randomMarkdownDecorate: boolean = false ):
         .toLowerCase()
         .trim()
 
-    rand.seed( seed )
+    rand.seed( seed + additionalSeed )
 
     const answer = choices[ rand( choices.length ) ]
     return randomMarkdownDecorate ? randomMarkdownDecorateFunction( answer ) : answer

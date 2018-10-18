@@ -1,6 +1,12 @@
-import * as lodash from 'lodash'
+import * as randomSeed from 'random-seed'
+const rand = randomSeed.create()
 
-export default ( messageText: string ): string => {
+export default ( params: {
+    messageText: string,
+    additionalSeed?: string
+} ): string => {
+
+    const { messageText, additionalSeed = '' } = params
 
     const numbers = messageText
         .replace( /[^-\d\s]/iug, ' ' )
@@ -15,5 +21,6 @@ export default ( messageText: string ): string => {
         return Math.random() > 0.5 ? scold : scold.toUpperCase()
     }
 
-    return lodash.random( numbers[0], numbers[1], false ).toString()
+    rand.seed( additionalSeed ? additionalSeed : Number( new Date() ) )
+    return rand.intBetween( numbers[0], numbers[1] )
 }

@@ -61,14 +61,16 @@ interface DiscordCommand {
 
     command: string,
     contents: string,
-    args: string[]
+    args: string[],
+
+    attachmentSeeds: string[]
 }
 
 function parseDiscordCommand( msg: Discord.Message ): DiscordCommand {
     const commandRegex = /^(\+[A-zА-я0-9]+) ?(.+)?/
     const results = commandRegex.exec( msg.content )
     if ( !results ) {
-        return { valid: false, command: '', contents: '', args: [] }
+        return { valid: false, command: '', contents: '', args: [], attachmentSeeds: [] }
     }
 
     return {
@@ -76,7 +78,10 @@ function parseDiscordCommand( msg: Discord.Message ): DiscordCommand {
 
         command: results[1],
         contents: results[2] || '',
-        args: ( results[2] || '' ).split( /\s+/ )
+        args: ( results[2] || '' ).split( /\s+/ ),
+        attachmentSeeds: msg.attachments
+            .filter( attach => Boolean( attach.height ) && Boolean( attach.height ) )
+            .map( attach => `${attach.filesize}.${attach.width}x${attach.height}` )
     }
 }
 
@@ -188,7 +193,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
         return
     }
 
-    const { command, contents, args } = parsedCommand
+    const { command, contents, args, attachmentSeeds } = parsedCommand
 
     if ( msg.author.id === discordClient.user.id ) {
         return
@@ -198,17 +203,29 @@ async function onDiscordMessage( msg: Discord.Message ) {
         if ( !contents.trim() ) {
             return
         }
-        const response = ask( contents, randomDecorateAskResults )
+
+        const response = ask( {
+            messageText: contents,
+            randomMarkdownDecorate: randomDecorateAskResults,
+            additionalSeed: attachmentSeeds.join( '' )
+        } )
         msg.reply( response, { split: false } )
     }
 
     if ( command === '+pick' ) {
-        const response = pick( contents, randomDecoratePickResults )
+        const response = pick( {
+            messageText: contents,
+            randomMarkdownDecorate: randomDecoratePickResults,
+            additionalSeed: attachmentSeeds.join( '' )
+        } )
         msg.reply( response, { split: false } )
     }
 
     if ( command === '+range' ) {
-        const response = range( contents )
+        const response = range( {
+            messageText: contents,
+            additionalSeed: attachmentSeeds.join( '' )
+        } )
         msg.reply( response, { split: false } )
     }
 

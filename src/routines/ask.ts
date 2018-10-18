@@ -2,7 +2,17 @@ import * as randomSeed from 'random-seed'
 const rand = randomSeed.create()
 import randomMarkdownDecorateFunction from './random_markdown_decorate'
 
-export default ( messageText: string, randomMarkdownDecorate: boolean = false ): string => {
+export default ( params: {
+    messageText: string,
+    randomMarkdownDecorate?: boolean,
+    additionalSeed?: string
+} ): string => {
+
+    const {
+        messageText,
+        randomMarkdownDecorate = false,
+        additionalSeed = ''
+    } = params
 
     const parsedMessage = messageText
         .trim()
@@ -13,7 +23,7 @@ export default ( messageText: string, randomMarkdownDecorate: boolean = false ):
         .join( ' ' )
         .trim()
 
-    rand.seed( parsedMessage )
+    rand.seed( parsedMessage + additionalSeed )
 
     if ( Math.random() < 0.15 ) {
         return '...'
