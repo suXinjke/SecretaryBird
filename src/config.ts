@@ -10,14 +10,11 @@ interface Log4jsSettings {
     toFile: string
 }
 
-interface DiscordCommandConfig {
+export interface DiscordCommandConfig {
     disabled: boolean,
 
-    guildIDWhitelist: Discord.Snowflake[],
-    channelIDWhitelist: Discord.Snowflake[],
-
-    roleNameWhitelist: Discord.Snowflake[],
-    userTagWhitelist: Discord.Snowflake[]
+    snowflakeWhitelist: Discord.Snowflake[],
+    snowflakeBlacklist: Discord.Snowflake[]
 }
 
 interface MainConfig {

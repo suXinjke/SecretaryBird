@@ -11,6 +11,7 @@ import * as lodash from 'lodash'
 
 import * as _debug from 'debug'
 import { DumpedMessage } from './message_database'
+import { DiscordCommandConfig } from './config'
 const debug = _debug( 'discord' )
 
 let discordClient: Discord.Client = null
@@ -18,40 +19,41 @@ let discordClient: Discord.Client = null
 let processing = false
 
 function isProcessorAllowed( command: string, msg: Discord.Message ): boolean {
-    const processorConfig = config.get().discord.processors[command] || config.get().discord.processors['any']
-    if ( !processorConfig ) {
-        return false
+    const anyCommandConfig = {
+        disabled: false,
+        snowflakeWhitelist: [] as string[],
+        snowflakeBlacklist: [] as string[],
+        ...( config.get().discord.processors['any'] || {} )
     }
 
-    const {
-        disabled = false,
-        guildIDWhitelist = [],
-        channelIDWhitelist = [],
-        roleNameWhitelist = [],
-        userTagWhitelist = []
-    } = processorConfig
+    const commandConfig = lodash.mergeWith(
+        anyCommandConfig,
+        config.get().discord.processors[command] || {},
+
+        ( objValue, srcValue ) => {
+            if ( lodash.isArray( objValue ) ) {
+                return objValue.concat( srcValue );
+            }
+        }
+    )
+
+    const { disabled, snowflakeWhitelist, snowflakeBlacklist } = commandConfig
 
     if ( disabled ) {
         return false
     }
 
-    if ( msg.guild && guildIDWhitelist.length > 0 && guildIDWhitelist.includes( msg.guild.id ) ) {
-        return true
-    }
+    const ids = [
+        msg.guild.id,
+        msg.channel.id,
+        ...( msg.member.roles.map( role => role.id ) ),
+        msg.author.id
+    ]
 
-    if ( msg.channel && channelIDWhitelist.length > 0 && channelIDWhitelist.includes( msg.channel.id ) ) {
-        return true
-    }
-
-    if ( roleNameWhitelist.length > 0 && msg.member.roles.find( role => roleNameWhitelist.includes( role.name ) ) ) {
-        return true
-    }
-
-    if ( userTagWhitelist.length > 0 && userTagWhitelist.includes( msg.author.tag ) ) {
-        return true
-    }
-
-    return false
+    return (
+        !ids.some( id => snowflakeBlacklist.includes( id ) ) &&
+        ids.some( id => snowflakeWhitelist.length === 0 || snowflakeWhitelist.includes( id ) )
+    )
 }
 
 interface DiscordCommand {
