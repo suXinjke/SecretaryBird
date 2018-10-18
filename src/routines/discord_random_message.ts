@@ -10,7 +10,7 @@ const inlineCodeRegex = /(`)(.*?)\1/g
 const boldItalicsRegex = /(\*+)(.+)\1/g
 const strikethroughRegex = /(\~\~)(.*?)\1/g
 const underlineRegex = /(__)(.*?)\1/g
-const discordMentionRegex = /<@\d+>/g
+const discordMentionRegex = /<@!?\d+>/g
 const discordChannelRegex = /<#\d+>/g
 const discordEmojiRegex = /<a?:.+:\d+>/g
 
