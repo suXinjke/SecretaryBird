@@ -212,16 +212,6 @@ async function onDiscordMessage( msg: Discord.Message ) {
         msg.reply( response, { split: false } )
     }
 
-    if ( command === '+rand' ) {
-        for ( let i = 0 ; i < 100 ; i++ ) {
-            const randomMessage = await getRandomDumpedMessageToSend()
-            if ( randomMessage ) {
-                msg.channel.send( randomMessage.result )
-                break
-            }
-        }
-    }
-
     if ( command === '+crawl' ) {
 
         const processorName = args[0]
