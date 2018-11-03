@@ -6,7 +6,8 @@ export default ( params: {
     additionalSeed?: string
 } ): string => {
 
-    const { messageText, additionalSeed = '' } = params
+    const { additionalSeed = '' } = params
+    const messageText = params.messageText || '1 10'
 
     const numbers = messageText
         .replace( /[^-\d\s]/iug, ' ' )
