@@ -76,7 +76,7 @@ function parseDiscordCommand( msg: Discord.Message ): DiscordCommand {
     return {
         valid: true,
 
-        command: results[1],
+        command: results[1].toLowerCase(),
         contents: results[2] || '',
         args: ( results[2] || '' ).split( /\s+/ ),
         attachmentSeeds: msg.attachments
