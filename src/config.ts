@@ -36,6 +36,8 @@ interface MainConfig {
         messageDBPath: string,
         messageDBChannels: string[],
 
+        pickDBPath: string,
+
         randomDecorateAskResults: boolean,
         randomDecoratePickResults: boolean
     },
@@ -69,6 +71,8 @@ const config: MainConfig = {
 
         messageDBPath: '',
         messageDBChannels: [],
+
+        pickDBPath: '',
 
         randomDecorateAskResults: true,
         randomDecoratePickResults: true

@@ -3,6 +3,7 @@ import * as lodash from 'lodash'
 import * as has_emoji from 'has-emoji'
 import randomMarkdownDecorateFunction from './random_markdown_decorate'
 const rand = randomSeed.create()
+import * as pickDB from '../pick_database'
 
 const discordMentionRegex = /<@\d+>/
 const discordChannelRegex = /<#\d+>/
@@ -57,7 +58,8 @@ export default ( params: {
             rand.seed( choice_seed + additionalSeed )
 
             return {
-                answer: choice,
+                choice_original: choice,
+                choice: choice_seed,
                 score: rand.floatBetween( 0, 1 ) as number
             }
         } )
@@ -73,7 +75,11 @@ export default ( params: {
         ] )
     }
 
-    const answer = choices[0].answer
+    if ( pickDB.isInitialized() ) {
+        pickDB.dumpChoice( choices )
+    }
+
+    const answer = choices[0].choice_original
 
     return randomMarkdownDecorate ? randomMarkdownDecorateFunction( answer ) : answer
 }
