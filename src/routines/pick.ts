@@ -75,7 +75,7 @@ export default ( params: {
         ] )
     }
 
-    if ( pickDB.isInitialized() ) {
+    if ( !additionalSeed && pickDB.isInitialized() ) {
         pickDB.dumpChoice( choices )
     }
 
