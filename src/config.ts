@@ -39,7 +39,9 @@ interface MainConfig {
         pickDBPath: string,
 
         randomDecorateAskResults: boolean,
-        randomDecoratePickResults: boolean
+        randomDecoratePickResults: boolean,
+
+        askNoAnswerProbability: number
     },
 
     twitter: {
@@ -75,7 +77,9 @@ const config: MainConfig = {
         pickDBPath: '',
 
         randomDecorateAskResults: true,
-        randomDecoratePickResults: true
+        randomDecoratePickResults: true,
+
+        askNoAnswerProbability: 0.05
     },
 
     twitter: {

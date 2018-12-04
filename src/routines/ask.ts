@@ -5,13 +5,15 @@ import randomMarkdownDecorateFunction from './random_markdown_decorate'
 export default ( params: {
     messageText: string,
     randomMarkdownDecorate?: boolean,
-    additionalSeed?: string
+    additionalSeed?: string,
+    noAnswerProbability?: number
 } ): string => {
 
     const {
         messageText,
         randomMarkdownDecorate = false,
-        additionalSeed = ''
+        additionalSeed = '',
+        noAnswerProbability = 0.05
     } = params
 
     const parsedMessage = messageText
@@ -25,7 +27,7 @@ export default ( params: {
 
     rand.seed( parsedMessage + additionalSeed )
 
-    if ( Math.random() < 0.15 ) {
+    if ( noAnswerProbability > 0.0 && Math.random() < noAnswerProbability ) {
         return '...'
     } else {
         const answer = rand.random() > 0.5 ? 'YES' : 'NO'

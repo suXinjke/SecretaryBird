@@ -174,7 +174,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
         return
     }
 
-    const { messageDBChannels, randomDecorateAskResults, randomDecoratePickResults } = config.get().discord
+    const { messageDBChannels, randomDecorateAskResults, randomDecoratePickResults, askNoAnswerProbability } = config.get().discord
 
     if ( messageDBChannels.includes( msg.channel.id ) ) {
         messageDB.dumpMessages( [ {
@@ -207,7 +207,8 @@ async function onDiscordMessage( msg: Discord.Message ) {
         const response = ask( {
             messageText: contents,
             randomMarkdownDecorate: randomDecorateAskResults,
-            additionalSeed: attachmentSeeds.join( '' )
+            additionalSeed: attachmentSeeds.join( '' ),
+            noAnswerProbability: askNoAnswerProbability
         } )
         msg.reply( response, { split: false } )
     }
