@@ -236,6 +236,15 @@ async function onDiscordMessage( msg: Discord.Message ) {
         msg.reply( response, { split: false } )
     }
 
+    if ( command === '+pick2' ) {
+        const response = pick( {
+            messageText: contents,
+            randomMarkdownDecorate: randomDecoratePickResults,
+            additionalSeed: ( new Date ).toISOString()
+        } )
+        msg.reply( response, { split: false } )
+    }
+
     if ( command === '+range' ) {
         const response = range( {
             messageText: contents,
