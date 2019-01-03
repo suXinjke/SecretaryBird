@@ -22,7 +22,7 @@ export default ( params: {
         additionalSeed = ''
     } = params
 
-    const separators = [ /\|\s*/g, /;\s*/g, /,\s*/g, /\s+(?:или|or)\s*/, /\s+/g ]
+    const separators = [ /\|\s*/g, /;\s*/g, /,\s*/g, /\s+(?:или|or)\s+/, /\s+/g ]
     const separatorToUse = separators.find( separator => separator.test( messageText ) ) || separators[separators.length - 1]
 
     const hasEmoji = has_emoji( messageText )
