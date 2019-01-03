@@ -35,7 +35,7 @@ export async function init() {
 
     await new Promise( ( res, rej ) => {
         pickDB.exec( `
-            CREATE TABLE IF NOT EXISTS 'choices' ( 'choice' TEXT, 'score' REAL, PRIMARY KEY('choice') );
+            CREATE TABLE IF NOT EXISTS 'choices' ( 'choice' TEXT, 'score' REAL, 'created_datetime' INTEGER, PRIMARY KEY('choice') );
         `, ( err ) => {
             return err ? rej( err ) : res()
         } )
@@ -45,8 +45,10 @@ export async function init() {
 export function dumpChoice( choices: Array<{ choice: string, score: number }> ) {
 
     return new Promise( ( res, rej ) => {
-        const sql = `INSERT OR IGNORE INTO choices ( 'choice', 'score' ) VALUES ` + choices.map( message => `( ?, ? )` ).join( ',' )
-        const params = choices.reduce( ( sum, choice ) => sum.concat( choice.choice, choice.score ), [] )
+        const timestamp = Math.floor( Number( new Date() ) / 1000 );
+
+        const sql = `INSERT OR IGNORE INTO choices ( 'choice', 'score', 'created_datetime' ) VALUES ` + choices.map( message => `( ?, ?, ? )` ).join( ',' )
+        const params = choices.reduce( ( sum, choice ) => sum.concat( choice.choice, choice.score, timestamp ), [] )
 
         pickDB.run( sql, params, ( err ) => {
             return err ? rej( err ) : res()
