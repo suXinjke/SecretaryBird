@@ -32,7 +32,7 @@ function isProcessorAllowed( command: string, msg: Discord.Message ): boolean {
 
         ( objValue, srcValue ) => {
             if ( lodash.isArray( objValue ) ) {
-                return objValue.concat( srcValue );
+                return objValue.concat( srcValue )
             }
         }
     )
@@ -221,7 +221,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
         const response = ask( {
             messageText: contents,
             randomMarkdownDecorate: randomDecorateAskResults,
-            additionalSeed: ( new Date ).toISOString(),
+            additionalSeed: ( new Date() ).toISOString(),
             noAnswerProbability: askNoAnswerProbability
         } )
         msg.reply( response, { split: false } )
@@ -240,7 +240,7 @@ async function onDiscordMessage( msg: Discord.Message ) {
         const response = pick( {
             messageText: contents,
             randomMarkdownDecorate: randomDecoratePickResults,
-            additionalSeed: ( new Date ).toISOString()
+            additionalSeed: ( new Date() ).toISOString()
         } )
         msg.reply( response, { split: false } )
     }
@@ -318,7 +318,6 @@ export function setRandomPlayingActivity() {
     if ( nextRandomPlayingActivityTimer ) {
         clearTimeout( nextRandomPlayingActivityTimer )
     }
-
 
     nextRandomPlayingActivityTimer = setTimeout(
         setRandomPlayingActivity,

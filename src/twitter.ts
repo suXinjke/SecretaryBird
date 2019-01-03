@@ -52,17 +52,17 @@ export async function init() {
             } else if ( ctx.method === 'POST' ) {
                 token_secret = ''
 
-                const [ tokenSecret, url ] = await new Promise<[ string, string ]>( ( res, rej ) => {
-                    login_with_twitter.login( ( err, tokenSecret, url ) => {
+                const url = await new Promise<string>( ( res, rej ) => {
+                    login_with_twitter.login( ( err, tokenSecret, redirect_url ) => {
                         if ( err ) {
                             return rej( err )
                         }
 
-                        return res( [ tokenSecret, url ] )
+                        token_secret = tokenSecret
+
+                        return res( redirect_url )
                     } )
                 } )
-
-                token_secret = tokenSecret
 
                 ctx.redirect( url )
             }

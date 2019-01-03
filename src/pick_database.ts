@@ -45,7 +45,7 @@ export async function init() {
 export function dumpChoice( choices: Array<{ choice: string, score: number }> ) {
 
     return new Promise( ( res, rej ) => {
-        const timestamp = Math.floor( Number( new Date() ) / 1000 );
+        const timestamp = Math.floor( Number( new Date() ) / 1000 )
 
         const sql = `INSERT OR IGNORE INTO choices ( 'choice', 'score', 'created_datetime' ) VALUES ` + choices.map( message => `( ?, ?, ? )` ).join( ',' )
         const params = choices.reduce( ( sum, choice ) => sum.concat( choice.choice, choice.score, timestamp ), [] )
