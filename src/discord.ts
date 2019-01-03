@@ -213,6 +213,20 @@ async function onDiscordMessage( msg: Discord.Message ) {
         msg.reply( response, { split: false } )
     }
 
+    if ( command === '+ask2' ) {
+        if ( !contents.trim() ) {
+            return
+        }
+
+        const response = ask( {
+            messageText: contents,
+            randomMarkdownDecorate: randomDecorateAskResults,
+            additionalSeed: ( new Date ).toISOString(),
+            noAnswerProbability: askNoAnswerProbability
+        } )
+        msg.reply( response, { split: false } )
+    }
+
     if ( command === '+pick' ) {
         const response = pick( {
             messageText: contents,
