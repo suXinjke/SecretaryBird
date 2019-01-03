@@ -20,6 +20,10 @@ export interface DiscordCommandConfig {
 interface MainConfig {
     forceDebugLogging: boolean,
 
+    twitch: {
+        clientKey: ''
+    },
+
     discord: {
         authToken: string,
         randomPlayingActivityChangeMsecs: number,
@@ -41,7 +45,12 @@ interface MainConfig {
         randomDecorateAskResults: boolean,
         randomDecoratePickResults: boolean,
 
-        askNoAnswerProbability: number
+        askNoAnswerProbability: number,
+
+        twitchStreamsCheckMsecs: number,
+        twitchStreamsAnnounceChannel: Discord.Snowflake,
+        twitchStreamsMessageToSend: string
+        twitchStreamsToCheck: string[]
     },
 
     twitter: {
@@ -59,6 +68,10 @@ interface MainConfig {
 
 const config: MainConfig = {
     forceDebugLogging: false,
+
+    twitch: {
+        clientKey: ''
+    },
 
     discord: {
         authToken: null,
@@ -79,7 +92,12 @@ const config: MainConfig = {
         randomDecorateAskResults: true,
         randomDecoratePickResults: true,
 
-        askNoAnswerProbability: 0.05
+        askNoAnswerProbability: 0.05,
+
+        twitchStreamsCheckMsecs: 1000 * 60,
+        twitchStreamsAnnounceChannel: '',
+        twitchStreamsMessageToSend: 'https://twitch.tv/%username%',
+        twitchStreamsToCheck: []
     },
 
     twitter: {

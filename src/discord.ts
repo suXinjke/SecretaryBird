@@ -1,22 +1,23 @@
 import * as Discord from 'discord.js'
 import * as config from './config'
 import * as messageDB from './message_database'
-import * as twitter from './twitter'
 import ask from './routines/ask'
 import pick from './routines/pick'
 import range from './routines/range'
 import discordRandomMessage from './routines/discord_random_message'
 import * as fs from 'fs'
 import * as lodash from 'lodash'
+import axios from 'axios'
 
 import * as _debug from 'debug'
 import { DumpedMessage } from './message_database'
-import { DiscordCommandConfig } from './config'
 const debug = _debug( 'discord' )
 
 let discordClient: Discord.Client = null
 
 let processing = false
+
+const twitchActiveStreamsUsernames: { [key: string]: Discord.Message } = {}
 
 function isProcessorAllowed( command: string, msg: Discord.Message ): boolean {
     const anyCommandConfig = {
@@ -327,9 +328,62 @@ export function setRandomPlayingActivity() {
     discordClient.user.setActivity( lodash.sample( botRandomPlayingMessages ), { type: 'PLAYING' } )
 }
 
+async function checkTwitchStreams() {
+    const { clientKey } = config.get().twitch
+    const { twitchStreamsCheckMsecs, twitchStreamsMessageToSend, twitchStreamsToCheck, twitchStreamsAnnounceChannel } = config.get().discord
+
+    try {
+        const streams = ( await axios.get(
+            'https://api.twitch.tv/helix/streams', {
+                params: {
+                    user_login: twitchStreamsToCheck
+                },
+                headers: {
+                    'Client-ID': clientKey
+                }
+            }
+        ) ).data.data as any[]
+
+        for ( const activeUserId in twitchActiveStreamsUsernames ) {
+            if (
+                twitchActiveStreamsUsernames[activeUserId] &&
+                !streams.find( stream => stream.user_id === activeUserId )
+            ) {
+                await twitchActiveStreamsUsernames[activeUserId].delete()
+                twitchActiveStreamsUsernames[activeUserId] = undefined
+            }
+        }
+
+        for ( const stream of streams ) {
+
+            if ( twitchActiveStreamsUsernames[stream.user_id] ) {
+                continue
+            }
+
+            if ( !stream.user_name ) {
+                continue
+            }
+
+            const messageText = twitchStreamsMessageToSend
+                .replace( /%username%/g, stream.user_name )
+                .replace( /%title%/g, stream.title )
+
+            const channel = discordClient.channels.get( twitchStreamsAnnounceChannel ) as Discord.TextChannel
+            const message = await channel.send( messageText ) as Discord.Message
+
+            twitchActiveStreamsUsernames[stream.user_id] = message
+        }
+    } catch ( err ) {
+        debug( err )
+    } finally {
+        setTimeout( checkTwitchStreams, twitchStreamsCheckMsecs )
+    }
+}
+
 export async function init() {
 
-    const { authToken, invisible } = config.get().discord
+    const { twitch } = config.get()
+    const { authToken, invisible, twitchStreamsCheckMsecs, twitchStreamsAnnounceChannel, twitchStreamsToCheck } = config.get().discord
 
     discordClient = new Discord.Client()
     discordClient.on( 'error', err => {
@@ -347,4 +401,13 @@ export async function init() {
     }
 
     setRandomPlayingActivity()
+
+    if (
+        twitch.clientKey &&
+        twitchStreamsCheckMsecs > 0 &&
+        twitchStreamsAnnounceChannel &&
+        twitchStreamsToCheck.length > 0
+    ) {
+        checkTwitchStreams()
+    }
 }
