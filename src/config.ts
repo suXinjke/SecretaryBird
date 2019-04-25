@@ -51,6 +51,7 @@ interface MainConfig {
         twitchStreamsAnnounceChannel: Discord.Snowflake,
         twitchStreamsMessageToSend: string
         twitchStreamsToCheck: string[]
+        twitchGamesToCheck: string[]
     },
 
     twitter: {
@@ -97,7 +98,8 @@ const config: MainConfig = {
         twitchStreamsCheckMsecs: 1000 * 60,
         twitchStreamsAnnounceChannel: '',
         twitchStreamsMessageToSend: 'https://twitch.tv/%username%',
-        twitchStreamsToCheck: []
+        twitchStreamsToCheck: [],
+        twitchGamesToCheck: []
     },
 
     twitter: {

@@ -330,13 +330,14 @@ export function setRandomPlayingActivity() {
 
 async function checkTwitchStreams() {
     const { clientKey } = config.get().twitch
-    const { twitchStreamsCheckMsecs, twitchStreamsMessageToSend, twitchStreamsToCheck, twitchStreamsAnnounceChannel } = config.get().discord
+    const { twitchStreamsCheckMsecs, twitchStreamsMessageToSend, twitchStreamsToCheck, twitchGamesToCheck, twitchStreamsAnnounceChannel } = config.get().discord
 
     try {
         const streams = ( await axios.get(
             'https://api.twitch.tv/helix/streams', {
                 params: {
-                    user_login: twitchStreamsToCheck
+                    user_login: twitchStreamsToCheck,
+                    game_id: twitchGamesToCheck
                 },
                 headers: {
                     'Client-ID': clientKey
@@ -383,7 +384,7 @@ async function checkTwitchStreams() {
 export async function init() {
 
     const { twitch } = config.get()
-    const { authToken, invisible, twitchStreamsCheckMsecs, twitchStreamsAnnounceChannel, twitchStreamsToCheck } = config.get().discord
+    const { authToken, invisible, twitchStreamsCheckMsecs, twitchStreamsAnnounceChannel, twitchStreamsToCheck, twitchGamesToCheck } = config.get().discord
 
     discordClient = new Discord.Client()
     discordClient.on( 'error', err => {
@@ -406,7 +407,7 @@ export async function init() {
         twitch.clientKey &&
         twitchStreamsCheckMsecs > 0 &&
         twitchStreamsAnnounceChannel &&
-        twitchStreamsToCheck.length > 0
+        ( twitchStreamsToCheck.length > 0 || twitchGamesToCheck.length > 0 )
     ) {
         checkTwitchStreams()
     }
