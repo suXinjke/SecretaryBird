@@ -350,8 +350,13 @@ async function checkTwitchStreams() {
                 twitchActiveStreamsUsernames[activeUserId] &&
                 !streams.find( stream => stream.user_id === activeUserId )
             ) {
-                await twitchActiveStreamsUsernames[activeUserId].delete()
-                twitchActiveStreamsUsernames[activeUserId] = undefined
+                try {
+                    await twitchActiveStreamsUsernames[activeUserId].delete()
+                } catch ( err ) {
+                    console.error( err )
+                } finally {
+                    twitchActiveStreamsUsernames[activeUserId] = undefined
+                }
             }
         }
 
